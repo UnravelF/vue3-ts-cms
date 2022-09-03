@@ -37,7 +37,6 @@ class GFRequest {
     // 添加所有的实例都有的拦截器
     this.instance.interceptors.request.use(
       (config) => {
-        console.log('所有拦截器都有的实例 全局请求拦截成功')
         // 是否显示加载中状态
         if (this.showLoading) {
           this.loading = ElLoading.service({
@@ -49,14 +48,12 @@ class GFRequest {
         return config
       },
       (err) => {
-        console.log('所有拦截器都有的实例 全局请求拦截失败')
         return err
       }
     )
 
     this.instance.interceptors.response.use(
       (res) => {
-        console.log('所有拦截器都有的实例 全局响应拦截成功')
         // 将loading移除
         this.loading?.close()
 
@@ -68,7 +65,6 @@ class GFRequest {
         }
       },
       (err) => {
-        console.log('所有拦截器都有的实例 全局响应拦截失败')
         // 将loading移除
         this.loading?.close()
 
