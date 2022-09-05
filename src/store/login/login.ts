@@ -3,8 +3,6 @@ import { Module } from 'vuex'
 import { ILoginState } from './types'
 import { IRootState } from '../types'
 
-import router from '@/router'
-
 // 引入登录的网络请求
 import {
   accountLoginRequest,
@@ -13,6 +11,8 @@ import {
 } from '@/service/login/login'
 // 引入封装的存取token文件
 import localCache from '@/utils/cache'
+import router from '@/router'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 
 import { IAccount } from '@/service/login/types'
 
@@ -35,6 +35,14 @@ const loginModule: Module<ILoginState, IRootState> = {
     },
     changeUserMenus(state, userMenus: any) {
       state.userMenus = userMenus
+
+      // userMenus -> routes
+      const routes = mapMenusToRoutes(userMenus)
+
+      // 将routes => router.main.children
+      routes.forEach((route) => {
+        router.addRoute('main', route)
+      })
     }
   },
   getters: {},
@@ -58,7 +66,7 @@ const loginModule: Module<ILoginState, IRootState> = {
       // 存取登录成功后用户的信息
       localCache.setCache('userInfo', userInfo)
 
-      // 3.请求用户动态菜单
+      // 3.根据用户角色id请求用户动态菜单
       const userMenusResult = await requestUserMenuByRoleId(userInfo.role.id)
       const userMenus = userMenusResult.data
       commit('changeUserMenus', userMenus)

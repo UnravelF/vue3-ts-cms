@@ -78,7 +78,7 @@ class GFRequest {
   }
 
   // 网路请求拦截器的封装
-  request<T>(config: GFRequestConfig<T>): Promise<T> {
+  request<T = any>(config: GFRequestConfig<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       // 1. 单个请求对请求config的处理
       if (config.interceptors?.requestInterceptor) {
@@ -110,16 +110,16 @@ class GFRequest {
     })
   }
 
-  get<T>(config: GFRequestConfig<T>): Promise<T> {
+  get<T = any>(config: GFRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
-  post<T>(config: GFRequestConfig<T>): Promise<T> {
+  post<T = any>(config: GFRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
-  delete<T>(config: GFRequestConfig<T>): Promise<T> {
+  delete<T = any>(config: GFRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'DELETE' })
   }
-  patch<T>(config: GFRequestConfig<T>): Promise<T> {
+  patch<T = any>(config: GFRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'PATCH' })
   }
 }
