@@ -11,7 +11,18 @@
       ref="pageContentRef"
       :contentTableConfig="contentTableConfig"
       pageName="users"
-    ></page-content>
+    >
+      <!-- 动态插槽列 -->
+      <!-- 用户状态栏 -->
+      <template #status="scope">
+        <el-button
+          size="small"
+          plain
+          :type="scope.row.enable ? 'primary' : 'danger'"
+          >{{ scope.row.enable ? '启用' : '禁用' }}</el-button
+        >
+      </template>
+    </page-content>
   </div>
 </template>
 

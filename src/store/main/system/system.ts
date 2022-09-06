@@ -12,7 +12,9 @@ const systemModule: Module<ISystemState, IRootState> = {
       usersList: [],
       usersCount: 0,
       roleList: [],
-      roleCount: 0
+      roleCount: 0,
+      goodsList: [],
+      goodsCount: 0
     }
   },
   mutations: {
@@ -27,34 +29,32 @@ const systemModule: Module<ISystemState, IRootState> = {
     },
     changeRoleCount(state, roleCount: number) {
       state.roleCount = roleCount
+    },
+    changeGoodsList(state, goodsList: any[]) {
+      state.goodsList = goodsList
+    },
+    changeGoodsCount(state, goodsCount: number) {
+      state.goodsCount = goodsCount
     }
   },
   getters: {
     pageListData(state) {
       return (pageName: string) => {
         return (state as any)[`${pageName}List`]
-        // switch (pageName) {
-        //   case 'users':
-        //     return state.usersList
-        //   case 'role':
-        //     return state.roleList
-        // }
+      }
+    },
+    pageListCount(state) {
+      return (pageName: string) => {
+        return (state as any)[`${pageName}Count`]
       }
     }
   },
   actions: {
+    // 发送网路请求
     async getPageListAction({ commit }, payload: any) {
       // 1.获取pageUrl
       const pageName = payload.pageName
       const pageUrl = `/${pageName}/list`
-      // switch (pageName) {
-      //   case 'users':
-      //     pageUrl = '/users/list'
-      //     break
-      //   case 'role':
-      //     pageUrl = '/role/list'
-      //     break
-      // }
 
       // 2. 对页面发送请求
       const pageResult = await getPageListData(pageUrl, payload.queryInfo)
@@ -66,16 +66,6 @@ const systemModule: Module<ISystemState, IRootState> = {
         pageName.slice(0, 1).toUpperCase() + pageName.slice(1)
       commit(`change${changePageName}List`, list)
       commit(`change${changePageName}Count`, totalCount)
-      // switch (pageName) {
-      //   case 'user':
-      //     commit('changeUserList', list)
-      //     commit('changeUserCount', totalCount)
-      //     break
-      //   case 'role':
-      //     commit('changeRoleList', list)
-      //     commit('changeRoleCount', totalCount)
-      //     break
-      // }
     }
   }
 }

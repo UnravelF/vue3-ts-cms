@@ -15,6 +15,6 @@ export function usePageSearch() {
     pageContentRef.value?.getPageData(queryInfo)
   }
 
-  // 可以当成是元组
+  // TS角度可以当成是元组  JS角度就是数组 但最终TS也会转换成JS  返回对象也行
   return [pageContentRef, handleResetClick, handleQueryClick]
 }

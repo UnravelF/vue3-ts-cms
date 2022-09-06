@@ -34,7 +34,7 @@
       ></el-table-column>
       <!-- 动态渲染的属性列 -->
       <template v-for="propItem in propList" :key="propItem.prop">
-        <el-table-column v-bind="propItem" align="center">
+        <el-table-column v-bind="propItem" align="center" show-overflow-tooltip>
           <template #default="scope">
             <slot :name="propItem.slotName" :row="scope.row">
               {{ scope.row[propItem.prop] }}
@@ -47,14 +47,11 @@
     <div class="footer">
       <slot name="footer">
         <el-pagination
-          v-model:currentPage="currentPage4"
-          v-model:page-size="pageSize4"
-          :page-sizes="[100, 200, 300, 400]"
-          :small="small"
-          :disabled="disabled"
-          :background="background"
-          layout="->, sizes, prev, pager, next, jumper"
-          :total="400"
+          v-model:currentPage="page.currentPage"
+          v-model:page-size="page.pageSize"
+          :page-sizes="[10, 20, 30]"
+          layout="->,total, sizes, prev, pager, next, jumper"
+          :total="listCount"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
         />
@@ -72,12 +69,16 @@ export default defineComponent({
       type: String,
       default: ''
     },
-    // 后台返回的列表数据
+    // 渲染的列表数据
     listData: {
       type: Array,
       required: true
     },
-    // 列表的属性
+    listCount: {
+      type: Number,
+      default: 0
+    },
+    // 渲染列表的属性
     propList: {
       type: Array,
       required: true
@@ -91,16 +92,33 @@ export default defineComponent({
     showSelectColumn: {
       type: Boolean,
       default: false
+    },
+    // page-content绑定过来的分页器相关属性信息
+    page: {
+      type: Object,
+      default: () => ({ currentPage: 0, pageSize: 10 })
     }
   },
-  emits: ['selectionChange'],
+  emits: ['selectionChange', 'update:page'],
   setup(props, { emit }) {
+    // 选择框的事件
     const handleSelectionChange = (value: any) => {
       emit('selectionChange', value)
     }
 
+    // 分页器的当前页、一页展示条数 改变事件的绑定事件
+    const handleCurrentChange = (currentPage: number) => {
+      emit('update:page', { ...props.page, currentPage })
+    }
+
+    const handleSizeChange = (pageSize: number) => {
+      emit('update:page', { ...props.page, pageSize })
+    }
+
     return {
-      handleSelectionChange
+      handleSelectionChange,
+      handleSizeChange,
+      handleCurrentChange
     }
   }
 })
