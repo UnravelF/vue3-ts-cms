@@ -66,13 +66,18 @@ export default defineComponent({
   setup(props) {
     const store = useStore()
     // 将请求的数据参数传入vuex进行获取数据
-    store.dispatch('system/getPageListAction', {
-      pageName: props.pageName,
-      queryInfo: {
-        offset: 0,
-        size: 10
-      }
-    })
+    // queryInfo默认没传递时为{}
+    const getPageData = (queryInfo: any = {}) => {
+      store.dispatch('system/getPageListAction', {
+        pageName: props.pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10,
+          ...queryInfo
+        }
+      })
+    }
+    getPageData()
 
     // 网络请求的数据
     const dataList = computed(() =>
@@ -81,6 +86,7 @@ export default defineComponent({
 
     return {
       dataList,
+      getPageData,
       // icon图标
       Delete,
       Edit,

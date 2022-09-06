@@ -1,5 +1,5 @@
 export const contentTableConfig = {
-  title: '用户列表',
+  title: '角色列表',
   // 自定义列表属性参数
   propList: [
     { prop: 'name', label: '角色名', minWidth: '100' },

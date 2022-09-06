@@ -22,7 +22,8 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   :show-password="item.type === 'password'"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handelValueChange($event, item.field)"
                 />
               </template>
               <!-- 判断类型下拉选择框 -->
@@ -31,7 +32,8 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   style="width: 100%"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handelValueChange($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -46,7 +48,8 @@
                 <el-date-picker
                   style="width: 100%"
                   v-bind="item.otherOptions"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handelValueChange($event, item.field)"
                 ></el-date-picker>
               </template>
             </el-form-item>
@@ -62,7 +65,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, computed } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { IFormItem } from '../types'
 
 export default defineComponent({
@@ -99,21 +102,20 @@ export default defineComponent({
     // 监听表单内各个输入框绑定的值 来发射事件到user里面
     // 实现双向绑定到user里面对应的表单绑定值,且不是通过子组件直接引用父组件user里面的值进行修改
     // 通过computed 解决用户搜索内容重置时，formData拷贝过来的对应值实现响应式
-    const formData = ref({ ...props.modelValue })
+    // const formData = ref({ ...props.modelValue })
 
-    watch(
-      () => props.modelValue,
-      (newValue) => {
-        formData.value = { ...newValue }
-      }
-    )
+    // watch(formData, (newValue) => emit('update:modelValue', newValue), {
+    //   deep: true
+    // })
 
-    watch(formData, (newValue) => emit('update:modelValue', newValue), {
-      deep: true
-    })
+    const handelValueChange = (value: any, field: string) => {
+      // modelValue里面可能有些改了有些没改，将没改的通过props.modelValue 与改了的通过[field]: value一同转过去绑定最新值
+      emit('update:modelValue', { ...props.modelValue, [field]: value })
+    }
 
     return {
-      formData
+      // formData
+      handelValueChange
     }
   }
 })
@@ -121,6 +123,6 @@ export default defineComponent({
 
 <style scoped lang="less">
 .gf-form {
-  padding-top: 20px;
+  padding-top: 22px;
 }
 </style>

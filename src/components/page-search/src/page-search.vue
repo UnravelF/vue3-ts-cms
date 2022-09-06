@@ -7,7 +7,7 @@
           <el-button @click="handleResetClick"
             ><el-icon><Refresh /></el-icon>重置</el-button
           >
-          <el-button type="primary"
+          <el-button type="primary" @click="handleQueryClick"
             ><el-icon><Search /></el-icon>搜索</el-button
           >
         </div>
@@ -30,7 +30,8 @@ export default defineComponent({
   components: {
     GForm
   },
-  setup(props) {
+  emits: ['resetBtnClick', 'queryBtnClick'],
+  setup(props, { emit }) {
     // 双向绑定的属性应该由我们的配置文件field来决定
     // 1.优化一：formData中的属性应该动态决定
     const formItems = props.searchFormConfig?.formItems ?? []
@@ -41,14 +42,22 @@ export default defineComponent({
 
     const formData = ref(formOriginData)
 
-    // 2. 当用户点击重置
+    // 2. 当用户点击重置事件
     const handleResetClick = () => {
       formData.value = formOriginData
+
+      emit('resetBtnClick')
+    }
+
+    // 3. 优化三：点击搜索按钮事件
+    const handleQueryClick = () => {
+      emit('queryBtnClick', formData.value)
     }
 
     return {
       formData,
-      handleResetClick
+      handleResetClick,
+      handleQueryClick
     }
   }
 })
