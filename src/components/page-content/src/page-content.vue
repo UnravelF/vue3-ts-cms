@@ -8,7 +8,9 @@
     >
       <!-- 1. header中的插槽 -->
       <template #headerHandler>
-        <el-button type="primary">新建用户</el-button>
+        <el-button v-if="isCreate" type="primary" @click="handleNewClick">
+          新建用户
+        </el-button>
         <el-button :icon="RefreshLeft"></el-button>
       </template>
 
@@ -22,14 +24,28 @@
         <span>{{ $filters.formatTime(scope.row.updateAt) }}</span>
       </template>
       <!-- 展示对数据的操作按钮权限栏 -->
-      <template #handler>
+      <template #handler="scope">
         <div class="handle-btns">
-          <el-button :icon="Edit" size="small" link type="primary"
-            >编辑</el-button
+          <el-button
+            :icon="Edit"
+            size="small"
+            link
+            type="primary"
+            v-if="isUpdate"
+            @click="handleEditClick(scope.row)"
           >
-          <el-button :icon="Delete" size="small" link type="danger"
-            >删除</el-button
+            编辑
+          </el-button>
+          <el-button
+            :icon="Delete"
+            size="small"
+            link
+            type="danger"
+            v-if="isDelete"
+            @click="handleDeleteClick(scope.row)"
           >
+            删除
+          </el-button>
         </div>
       </template>
 
@@ -51,6 +67,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from '@/store'
+import { usePermission } from '@/hooks/usePermission'
 
 // 引入封装的table组件
 import GfTable from '@/base-ui/table'
@@ -71,21 +88,30 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['newBtnClick', 'editBtnClick'],
+  setup(props, { emit }) {
     const store = useStore()
 
+    // 获取用户操作权限
+    const isCreate = usePermission(props.pageName, 'create')
+    const isUpdate = usePermission(props.pageName, 'update')
+    const isDelete = usePermission(props.pageName, 'delete')
+    const isQuery = usePermission(props.pageName, 'query')
+
     // 1.双向绑定pageInfo
-    const pageInfo = ref({ currentPage: 0, pageSize: 10 })
+    const pageInfo = ref({ currentPage: 1, pageSize: 10 })
     // 监听页数及当前页信息的改变重新获取数据
     watch(pageInfo, () => getPageData())
 
     // 2.将请求的数据参数传入vuex进行获取数据 发送网络请求
     // queryInfo默认没传递时为{}
     const getPageData = (queryInfo: any = {}) => {
+      // 判断是否有查询权限
+      if (!isQuery) return
       store.dispatch('system/getPageListAction', {
         pageName: props.pageName,
         queryInfo: {
-          offset: pageInfo.value.currentPage * pageInfo.value.pageSize,
+          offset: (pageInfo.value.currentPage - 1) * pageInfo.value.pageSize,
           size: pageInfo.value.pageSize,
           ...queryInfo
         }
@@ -112,6 +138,21 @@ export default defineComponent({
       }
     )
 
+    // 5.删除操作
+    const handleDeleteClick = (item: any) => {
+      store.dispatch('system/deletePageDataAction', {
+        pageName: props.pageName,
+        id: item.id
+      })
+    }
+    // 编辑  新建操作
+    const handleNewClick = () => {
+      emit('newBtnClick')
+    }
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
+    }
+
     return {
       // 列表数据
       dataList,
@@ -123,6 +164,14 @@ export default defineComponent({
       pageInfo,
       // 动态插槽的属性列
       otherPropSlots,
+      // 判定操作权限的参数
+      isCreate,
+      isUpdate,
+      isDelete,
+      // 权限操作事件
+      handleDeleteClick,
+      handleNewClick,
+      handleEditClick,
       // icon图标
       Delete,
       Edit,

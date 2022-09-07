@@ -15,6 +15,7 @@
       border
       style="width: 100%"
       @selection-change="handleSelectionChange"
+      v-bind="childrenProps"
     >
       <!-- 选择器列 -->
       <el-table-column
@@ -44,7 +45,7 @@
       </template>
     </el-table>
     <!-- table底部 -->
-    <div class="footer">
+    <div class="footer" v-if="showFooter">
       <slot name="footer">
         <el-pagination
           v-model:currentPage="page.currentPage"
@@ -97,6 +98,16 @@ export default defineComponent({
     page: {
       type: Object,
       default: () => ({ currentPage: 0, pageSize: 10 })
+    },
+    // 菜单栏是否需要展示二级菜单的属性
+    childrenProps: {
+      type: Object,
+      default: () => ({})
+    },
+    // 是否展示底部分页器 因为菜单列表一般不需要展示  其他列表一般需要展示 默认值为true  在配置文件中决定即可
+    showFooter: {
+      type: Boolean,
+      default: true
     }
   },
   emits: ['selectionChange', 'update:page'],

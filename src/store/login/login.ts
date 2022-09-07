@@ -12,7 +12,7 @@ import {
 // 引入封装的存取token文件
 import localCache from '@/utils/cache'
 import router from '@/router'
-import { mapMenusToRoutes } from '@/utils/map-menus'
+import { mapMenusToRoutes, mapMenusToPermissions } from '@/utils/map-menus'
 
 import { IAccount } from '@/service/login/types'
 
@@ -23,7 +23,8 @@ const loginModule: Module<ILoginState, IRootState> = {
       token: '',
       // 存储登录用的信息
       userInfo: {},
-      userMenus: []
+      userMenus: [],
+      permissions: []
     }
   },
   mutations: {
@@ -43,11 +44,15 @@ const loginModule: Module<ILoginState, IRootState> = {
       routes.forEach((route) => {
         router.addRoute('main', route)
       })
+
+      // 通过用户菜单 获取用户操作权限
+      const permissions = mapMenusToPermissions(userMenus)
+      state.permissions = permissions
     }
   },
   getters: {},
   actions: {
-    async accountLoginAction({ commit }, payload: IAccount) {
+    async accountLoginAction({ commit, dispatch }, payload: IAccount) {
       // 1. 实现登录逻辑
       // accountLoginRequest(payload).then((res) => {
       //   console.log(res)
@@ -58,6 +63,10 @@ const loginModule: Module<ILoginState, IRootState> = {
       // 获取token后存到vuex
       commit('changeToken', token)
       localCache.setCache('token', token)
+
+      // 发送初始化获取数据请求（完整的role/department）  解决退出登录再次登陆时该请求发送时  token还没获取 产生bug
+      // 在module里面调用根store的方法通过下面这种方式调用
+      dispatch('getInitialDataAction', null, { root: true })
 
       // 2. 请求用户信息
       const userInfoResult = await requestUserInfoById(id)
@@ -77,10 +86,12 @@ const loginModule: Module<ILoginState, IRootState> = {
       router.push('/main')
     },
     // 重新刷新启动自动获取本地缓存的值
-    loadLocalLogin({ commit }) {
+    loadLocalLogin({ commit, dispatch }) {
       const token = localCache.getCache('token')
       if (token) {
         commit('changeToken', token)
+        // 发送初始化获取数据请求（完整的role/department）
+        dispatch('getInitialDataAction', null, { root: true })
       }
       const userInfo = localCache.getCache('userInfo')
       if (userInfo) {
