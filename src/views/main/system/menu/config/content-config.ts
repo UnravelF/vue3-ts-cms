@@ -1,5 +1,6 @@
 export const contentTableConfig = {
   title: '菜单列表',
+  handleTitle: '新建菜单',
   // 自定义列表属性参数
   propList: [
     { prop: 'name', label: '菜单名称', minWidth: '120' },

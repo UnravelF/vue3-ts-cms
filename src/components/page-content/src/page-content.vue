@@ -9,7 +9,7 @@
       <!-- 1. header中的插槽 -->
       <template #headerHandler>
         <el-button v-if="isCreate" type="primary" @click="handleNewClick">
-          新建用户
+          {{ contentTableConfig.handleTitle }}
         </el-button>
         <el-button :icon="RefreshLeft"></el-button>
       </template>
@@ -124,6 +124,7 @@ export default defineComponent({
     const dataList = computed(() =>
       store.getters[`system/pageListData`](props.pageName)
     )
+
     const dataCount = computed(() =>
       store.getters[`system/pageListCount`](props.pageName)
     )

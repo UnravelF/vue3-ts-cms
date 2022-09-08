@@ -1,10 +1,9 @@
 export const contentTableConfig = {
-  title: '角色列表',
-  handleTitle: '新建角色',
+  title: '商品列表',
+  handleTitle: '新建商品',
   // 自定义列表属性参数
   propList: [
-    { prop: 'name', label: '角色名', minWidth: '100' },
-    { prop: 'intro', label: '权限', minWidth: '100' },
+    { prop: 'name', label: '类别名称', minWidth: '80' },
     {
       prop: 'createAt',
       label: '创建时间',

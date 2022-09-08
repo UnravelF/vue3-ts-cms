@@ -1,11 +1,16 @@
 <template>
   <div class="role">
     <!-- 角色列表搜索框 -->
-    <page-search :searchFormConfig="searchFormConfig"></page-search>
+    <page-search
+      :searchFormConfig="searchFormConfig"
+      @resetBtnClick="handleResetClick"
+      @queryBtnClick="handleQueryClick"
+    ></page-search>
     <!-- 角色列表 -->
     <page-content
       :contentTableConfig="contentTableConfig"
       pageName="role"
+      ref="pageContentRef"
       @newBtnClick="handleNewData"
       @editBtnClick="handleEditData"
     ></page-content>
@@ -43,6 +48,7 @@ import { contentTableConfig } from './config/content-config'
 import { searchFormConfig } from './config/search-config'
 import { modalConfig } from './config/modal-config'
 
+import { usePageSearch } from '@/hooks/usePageSearch'
 import { usePageModal } from '@/hooks/usePageModal'
 
 import { menuMapMenuLeafKeys } from '@/utils/map-menus'
@@ -56,6 +62,9 @@ export default defineComponent({
     PageModal
   },
   setup() {
+    // 处理搜索框部分的重置/模糊搜索角色列表功能
+    const [pageContentRef, handleResetClick, handleQueryClick] = usePageSearch()
+
     // 1.处理pageModal的hook
     const elTreeRef = ref<InstanceType<typeof ElTree>>()
     const editCallback = (item: any) => {
@@ -86,8 +95,13 @@ export default defineComponent({
       contentTableConfig,
       searchFormConfig,
       modalConfig,
+      pageContentRef,
       pageModalRef,
       defaultInfo,
+      // 搜索框重置/搜索函数
+      handleResetClick,
+      handleQueryClick,
+      // 列表框新建/编辑函数
       handleNewData,
       handleEditData,
       // 完整菜单数据

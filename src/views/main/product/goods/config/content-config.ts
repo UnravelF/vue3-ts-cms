@@ -1,5 +1,6 @@
 export const contentTableConfig = {
   title: '商品列表',
+  handleTitle: '新建商品',
   // 自定义列表属性参数
   propList: [
     { prop: 'name', label: '商品名称', minWidth: '80' },
