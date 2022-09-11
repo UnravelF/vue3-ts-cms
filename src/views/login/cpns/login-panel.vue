@@ -29,9 +29,9 @@
       <el-link type="primary" :underline="false">忘记密码</el-link>
     </div>
 
-    <el-button type="primary" class="login-btn" @click="handleLoginClick"
-      >立即登录</el-button
-    >
+    <el-button type="primary" class="login-btn" @click="handleLoginClick">
+      立即登录
+    </el-button>
   </div>
 </template>
 

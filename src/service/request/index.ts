@@ -105,7 +105,6 @@ class GFRequest {
           // 将showloading 设置为true, 不会影响下一次请求
           this.showLoading = DEFAULT_LOADING
           reject(err)
-          return err
         })
     })
   }

@@ -59,8 +59,6 @@ const systemModule: Module<ISystemState, IRootState> = {
     },
     // 部门列表
     changeDepartmentList(state, departmentList: any[]) {
-      console.log(departmentList)
-
       state.departmentList = departmentList
     },
     changeDepartmentCount(state, departmentCount: number) {

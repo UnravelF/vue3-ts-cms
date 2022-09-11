@@ -7,7 +7,7 @@ export const contentTableConfig = {
     { prop: 'type', label: '菜单类型', minWidth: '100' },
     { prop: 'url', label: '菜单url', minWidth: '120' },
     { prop: 'icon', label: '菜单图标', minWidth: '100' },
-    { prop: 'permission', label: '操作权限', minWidth: '100' },
+    // { prop: 'permission', label: '操作权限', minWidth: '100' },
     {
       prop: 'createAt',
       label: '创建时间',

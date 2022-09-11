@@ -9,6 +9,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+// 将引用的elementplus组件实例显示中文
 import { ElConfigProvider } from 'element-plus'
 import zhCn from 'element-plus/lib/locale/lang/zh-cn'
 
