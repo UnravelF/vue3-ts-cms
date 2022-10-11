@@ -60,6 +60,8 @@ const loginModule: Module<ILoginState, IRootState> = {
       // async/await 来代替网路请求方法的.then输出
       const loginResult = await accountLoginRequest(payload)
       const { id, token } = loginResult.data
+      console.log(token)
+
       // 获取token后存到vuex
       commit('changeToken', token)
       localCache.setCache('token', token)
@@ -99,6 +101,8 @@ const loginModule: Module<ILoginState, IRootState> = {
       }
       const userMenus = localCache.getCache('userMenus')
       if (userMenus) {
+        console.log(userMenus)
+
         commit('changeUserMenus', userMenus)
       }
     }
